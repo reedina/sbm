@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/reedina/buildenvironment/model"
+	"github.com/reedina/sbm/model"
 )
 
 //CreateEnvironment (POST)

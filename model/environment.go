@@ -18,7 +18,7 @@ type Environments struct {
 //DoesEnvironmentResourceExist (POST)
 func DoesEnvironmentResourceExist(environment *Environment) bool {
 
-	err := db.QueryRow("SELECT id, name, description, type FROM environments WHERE name=$1 and type=$2",
+	err := db.QueryRow("SELECT id, name, description, type FROM sbm_environments WHERE name=$1 and type=$2",
 		environment.Name, environment.Type).Scan(&environment.ID, &environment.Name, &environment.Description, &environment.Type)
 
 	if err == sql.ErrNoRows {
@@ -32,7 +32,7 @@ func DoesEnvironmentResourceExist(environment *Environment) bool {
 func CreateEnvironment(environment *Environment) error {
 
 	err := db.QueryRow(
-		"INSERT INTO environments(name, description, type) VALUES($1, $2, $3) RETURNING id",
+		"INSERT INTO sbm_environments(name, description, type) VALUES($1, $2, $3) RETURNING id",
 		environment.Name, environment.Description, environment.Type).Scan(&environment.ID)
 
 	if err != nil {
@@ -44,7 +44,7 @@ func CreateEnvironment(environment *Environment) error {
 
 //GetEnvironments (GET)
 func GetEnvironments() ([]Environment, error) {
-	rows, err := db.Query("SELECT id, name, description, type FROM environments")
+	rows, err := db.Query("SELECT id, name, description, type FROM sbm_environments")
 
 	if err != nil {
 		return nil, err
@@ -67,14 +67,14 @@ func GetEnvironments() ([]Environment, error) {
 
 //GetEnvironment (GET)
 func GetEnvironment(environment *Environment) error {
-	return db.QueryRow("SELECT name, description, type FROM environments WHERE id=$1",
+	return db.QueryRow("SELECT name, description, type FROM sbm_environments WHERE id=$1",
 		environment.ID).Scan(&environment.Name, &environment.Description, &environment.Type)
 }
 
 //UpdateEnvironment (PUT)
 func UpdateEnvironment(environment *Environment) error {
 	_, err :=
-		db.Exec("UPDATE environments SET name=$1, description=$2, type=$3 WHERE id=$4",
+		db.Exec("UPDATE sbm_environments SET name=$1, description=$2, type=$3 WHERE id=$4",
 			environment.Name, environment.Description, environment.Type, environment.ID)
 
 	return err
@@ -82,7 +82,7 @@ func UpdateEnvironment(environment *Environment) error {
 
 //DeleteEnvironment (DELETE)
 func DeleteEnvironment(environment *Environment) error {
-	_, err := db.Exec("DELETE FROM environments WHERE id=$1", environment.ID)
+	_, err := db.Exec("DELETE FROM sbm_environments WHERE id=$1", environment.ID)
 
 	return err
 }

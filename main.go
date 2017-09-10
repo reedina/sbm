@@ -15,5 +15,5 @@ func main() {
 		os.Getenv("AWS_DB_NAME"),
 		os.Getenv("AWS_DB_URL"))
 
-	a.RunApplication(":4040")
+	a.RunApplication(":4010")
 }
