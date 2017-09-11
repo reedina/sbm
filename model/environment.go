@@ -1,6 +1,8 @@
 package model
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 //Environment  (TYPE)
 type Environment struct {

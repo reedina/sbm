@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/reedina/buildenvironment/model"
+	"github.com/reedina/sbm/model"
 )
 
 //CreateEnvironmentInstance (POST)
@@ -18,36 +18,13 @@ func CreateEnvironmentInstance(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	// Validate if User exists based on email address
-	if model.DoesUserResourceExist(&environmentInstance.User) == false {
-		model.CreateUser(&environmentInstance.User) // check for minimum values & error handling: FIXME
-	}
-
-	// Validate if Team exists based on name
-	if model.DoesTeamResourceExist(&environmentInstance.Team) == false {
-		model.CreateTeam(&environmentInstance.Team) // check for minimum values & error handling: FIXME
-	}
-
-	// Validate User is a member of Team
-	teamuser := model.TeamUser{TeamID: environmentInstance.Team.ID, UserID: environmentInstance.User.ID}
-	if model.DoesTeamUserResourceExist(&teamuser) == false {
-		model.CreateTeamUser(&teamuser)
-	}
-
-	// Validate Project exists based on name
-	if model.DoesProjectResourceExist(&environmentInstance.Project) == false {
-		model.CreateProject(&environmentInstance.Project) // check for minimum values & error handling: FIXME
-	}
-
-	// Validate Team has Project
-	teamproject := model.TeamProject{TeamID: environmentInstance.Team.ID, ProjectID: environmentInstance.Project.ID}
-	if model.DoesTeamProjectResourceExist(&teamproject) == false {
-		model.CreateTeamProject(&teamproject)
-	}
 	// Validate Environment exists based on name and type
 	if model.DoesEnvironmentResourceExist(&environmentInstance.Environment) == false {
-		model.CreateEnvironment(&environmentInstance.Environment) // check for minimum values & error handling: FIXME
+
+		respondWithError(w, http.StatusBadRequest, "Environment resource does not exist")
+		return
 	}
+
 	// Validate parsing date time string to UTC epoch
 	utcEpoch, err := model.ConvertStringToUtcEpoch(environmentInstance.ExpirationStringTime)
 	if err != nil {

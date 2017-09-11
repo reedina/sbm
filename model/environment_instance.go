@@ -9,21 +9,27 @@ import (
 //EnvironmentInstance  (TYPE)
 type EnvironmentInstance struct {
 	ID                   int         `json:"id"`
-	User                 User        `json:"user"`
-	Team                 Team        `json:"team"`
-	Project              Project     `json:"project"`
 	Environment          Environment `json:"environment"`
 	ExpirationStringTime string      `json:"expiration_time"`      // "2017-12-01 22:43:22" - Local time
 	ExpirationUtcEpoch   int64       `json:"expiration_utc_epoch"` // 1513434000 - UTC time
 }
 
+/*
+{
+   "environment":  {
+     "name": "test01",
+     "type": "qa"
+  },
+   "expiration_time":  "2017-12-01 22:43:22"
+}
+*/
+
 //CreateEnvironmentInstance - Store in database
 func CreateEnvironmentInstance(environmentInstance *EnvironmentInstance) error {
 	err := db.QueryRow(
-		"INSERT INTO environmentinstances(userid, teamid, projectid,environmentid, expirationstring,expirationtime"+
-			") VALUES($1,$2,$3,$4,$5,$6) RETURNING id", environmentInstance.User.ID, environmentInstance.Team.ID, environmentInstance.Project.ID,
-		environmentInstance.Environment.ID, environmentInstance.ExpirationStringTime, environmentInstance.ExpirationUtcEpoch).
-		Scan(&environmentInstance.ID)
+		"INSERT INTO sbm_environment_instances(environment_id, expiration_string, expiration_time"+
+			") VALUES($1,$2,$3) RETURNING id", environmentInstance.Environment.ID, environmentInstance.ExpirationStringTime,
+		environmentInstance.ExpirationUtcEpoch).Scan(&environmentInstance.ID)
 
 	if err != nil {
 		return err
