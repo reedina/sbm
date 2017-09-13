@@ -1,1 +1,1 @@
-docker build -t sbm . 
+docker build -t mikerap/sbm . 
