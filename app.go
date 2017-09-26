@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/reedina/sbm/ctrl"
 	"github.com/reedina/sbm/model"
+	"github.com/rs/cors"
 
 	//Initialize pq driver
 	_ "github.com/lib/pq"
@@ -41,5 +42,11 @@ func (a *App) InitializeRoutes() {
 
 //RunApplication - Start the HTTP server
 func (a *App) RunApplication(addr string) {
-	log.Fatal(http.ListenAndServe(addr, a.Router))
+
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
+	})
+
+	log.Fatal(http.ListenAndServe(addr, c.Handler(a.Router)))
 }
