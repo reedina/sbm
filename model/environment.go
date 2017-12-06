@@ -17,6 +17,18 @@ type Environments struct {
 	Environments []*Environment `json:"environments"`
 }
 
+//DoesEnvironmentIDExist (POST)
+func DoesEnvironmentIDExist(environment *Environment) bool {
+
+	err := db.QueryRow("SELECT id  FROM sbm_environments WHERE id=$1", environment.ID).Scan(&environment.ID)
+
+	if err == sql.ErrNoRows {
+		return false
+	}
+
+	return true
+}
+
 //DoesEnvironmentResourceExist (POST)
 func DoesEnvironmentResourceExist(environment *Environment) bool {
 

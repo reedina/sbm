@@ -38,6 +38,7 @@ func (a *App) InitializeRoutes() {
 
 	//model.Environment struct
 	a.Router.HandleFunc("/api/environment/instance", ctrl.CreateEnvironmentInstance).Methods("POST")
+	a.Router.HandleFunc("/api/environment/instances", ctrl.GetEnvironmentInstances).Methods("GET")
 }
 
 //RunApplication - Start the HTTP server
