@@ -26,6 +26,30 @@ func CreateEnvironmentInstance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Set Team Name
+	environmentInstance.Team.Name = team.Name
+
+	// Validate Project exists based on ID
+	project := model.GetProject(environmentInstance.Project.ID)
+
+	if project.Name == "" {
+		respondWithError(w, http.StatusBadRequest, "Project ID does not exist")
+		return
+	}
+
+	// Set Project Name
+	environmentInstance.Project.Name = project.Name
+
+	// Validate this Project is assigned to THIS team
+	currentTeamID := team.ID
+	currentProjectTeamID := project.Team.ID
+
+	if currentTeamID != currentProjectTeamID {
+
+		respondWithError(w, http.StatusBadRequest, "Project ID does not exist for Team ID")
+		return
+	}
+
 	// Validate Environment exists based on ID
 	if model.DoesEnvironmentIDExist(&environmentInstance.Environment) == false {
 
