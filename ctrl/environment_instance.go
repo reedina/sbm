@@ -18,7 +18,15 @@ func CreateEnvironmentInstance(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	// Validate Environment exists based ID
+	// Validate Team exists based on ID
+	team := model.GetTeam(environmentInstance.Team.ID)
+
+	if team.Name == "" {
+		respondWithError(w, http.StatusBadRequest, "Team ID does not exist")
+		return
+	}
+
+	// Validate Environment exists based on ID
 	if model.DoesEnvironmentIDExist(&environmentInstance.Environment) == false {
 
 		respondWithError(w, http.StatusBadRequest, "Environment ID does not exist")
@@ -44,6 +52,7 @@ func CreateEnvironmentInstance(w http.ResponseWriter, r *http.Request) {
 func GetEnvironmentInstances(w http.ResponseWriter, r *http.Request) {
 
 	environments, err := model.GetEnvironmentInstances()
+
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
