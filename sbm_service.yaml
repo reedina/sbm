@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: sbm-api 
+spec:
+  type: LoadBalancer
+  selector:
+    app: sbm-api 
+  ports:
+  - protocol: TCP
+    port: 4050 
+    targetPort: 4050 

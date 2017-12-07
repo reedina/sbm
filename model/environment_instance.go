@@ -35,7 +35,7 @@ type EnvironmentInstances struct {
 //DoesEnvironmentInstanceNameExist (POST)
 func DoesEnvironmentInstanceNameExist(environmentInstance *EnvironmentInstance) bool {
 
-	err := db.QueryRow("SELECT id, name FROM sbm_environment_instances WHERE name=$1",
+	err := db.QueryRow("SELECT id, name FROM sbm_environment_instances WHERE name=?",
 		environmentInstance.Name).Scan(&environmentInstance.ID, &environmentInstance.Name)
 
 	if err == sql.ErrNoRows {
@@ -47,15 +47,22 @@ func DoesEnvironmentInstanceNameExist(environmentInstance *EnvironmentInstance) 
 
 //CreateEnvironmentInstance - Store in database
 func CreateEnvironmentInstance(environmentInstance *EnvironmentInstance) error {
-	err := db.QueryRow(
-		"INSERT INTO sbm_environment_instances(name, environment_id, deletion_time, team_id, team_name, project_id, project_name) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
-		environmentInstance.Name, environmentInstance.Environment.ID, environmentInstance.DelectionTime, environmentInstance.Team.ID, environmentInstance.Team.Name,
-		environmentInstance.Project.ID, environmentInstance.Project.Name).Scan(&environmentInstance.ID)
+	/*
+		err := db.QueryRow(
+			"INSERT INTO sbm_environment_instances(name, environment_id, deletion_time, team_id, team_name, project_id, project_name) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+			environmentInstance.Name, environmentInstance.Environment.ID, environmentInstance.DelectionTime, environmentInstance.Team.ID, environmentInstance.Team.Name,
+			environmentInstance.Project.ID, environmentInstance.Project.Name).Scan(&environmentInstance.ID)
+	*/
+
+	res, err := db.Exec("INSERT INTO sbm_environment_instances(name, environment_id, deletion_time, team_id, team_name, project_id, project_name) "+
+		"VALUES(?, ?, ?, ?, ?, ?, ?)", environmentInstance.Name, environmentInstance.Environment.ID, environmentInstance.DelectionTime, environmentInstance.Team.ID, environmentInstance.Team.Name, environmentInstance.Project.ID, environmentInstance.Project.Name)
 
 	if err != nil {
 		return err
 	}
 
+	id, err := res.LastInsertId()
+	environmentInstance.ID = int(id)
 	return nil
 }
 
