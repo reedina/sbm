@@ -13,7 +13,7 @@ import (
 // GetTeam - Validate Team Object
 func GetTeam(teamID int) Team {
 
-	url := "http://localhost:4040/api/team/" + strconv.Itoa(teamID)
+	url := "http://spm-api:4040/api/team/" + strconv.Itoa(teamID)
 
 	teamClient := http.Client{
 		Timeout: time.Second * 5,
@@ -47,7 +47,7 @@ func GetTeam(teamID int) Team {
 // GetProject - Validate Project Object
 func GetProject(projectID int) Project {
 
-	url := "http://localhost:4040/api/project/" + strconv.Itoa(projectID)
+	url := "http://spm-api:4040/api/project/" + strconv.Itoa(projectID)
 
 	teamClient := http.Client{
 		Timeout: time.Second * 5,

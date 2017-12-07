@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: sbm-rest
-          image: gcr.io/vscape-187223/rapuanosbm:v2
+          image: gcr.io/vscape-187223/rapuanosbm:v3
           ports:
             - containerPort: 4050
           env:
